@@ -3,42 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>时尚华丽页面</title>
+  <title>时尚设计 | 华丽呈现</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-purple-600 via-pink-500 to-red-400 min-h-screen flex flex-col items-center justify-center text-white font-sans">
+<body class="bg-gradient-to-br from-purple-700 via-pink-500 to-red-400 text-white font-sans">
 
-  <!-- 标题 -->
-  <header class="text-center mb-12 px-4">
-    <h1 class="text-5xl font-extrabold drop-shadow-lg mb-4">欢迎来到时尚界</h1>
-    <p class="text-lg text-white/80 max-w-xl mx-auto">探索令人惊叹的设计、灵感与创意</p>
+  <!-- 🔝 顶部导航栏 -->
+  <header class="bg-white/10 backdrop-blur-md shadow-lg fixed w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <h1 class="text-2xl font-extrabold text-white">时尚界</h1>
+      <nav class="space-x-6 hidden md:block">
+        <a href="#features" class="hover:underline">特色</a>
+        <a href="#about" class="hover:underline">关于</a>
+        <a href="#reviews" class="hover:underline">评价</a>
+        <a href="#contact" class="hover:underline">联系</a>
+      </nav>
+    </div>
   </header>
 
-  <!-- 卡片容器 -->
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 max-w-6xl w-full">
-    
-    <!-- 卡片1 -->
-    <div class="backdrop-blur-lg bg-white/10 border border-white/30 rounded-2xl shadow-xl p-6 transition transform hover:scale-105 duration-300">
-      <h2 class="text-2xl font-bold mb-2">高级时装</h2>
-      <p class="text-white/70 mb-4">融合经典与前卫，定义你的个性。</p>
-      <button class="px-4 py-2 bg-white text-purple-600 rounded-full font-semibold hover:bg-purple-100 transition">了解更多</button>
+  <!-- 🎯 英雄大图区域 -->
+  <section class="h-screen flex items-center justify-center text-center px-6" style="background-image: url('https://source.unsplash.com/1600x900/?fashion'); background-size: cover; background-position: center;">
+    <div class="bg-black/50 p-10 rounded-xl backdrop-blur-md">
+      <h2 class="text-5xl md:text-6xl font-bold mb-4">引领时尚，定义未来</h2>
+      <p class="text-xl mb-6 text-white/80">高端设计 | 潮流灵感 | 个性定制</p>
+      <a href="#features" class="px-6 py-3 bg-white text-pink-600 font-bold rounded-full hover:bg-pink-100 transition">立即探索</a>
     </div>
-
-    <!-- 卡片2 -->
-    <div class="backdrop-blur-lg bg-white/10 border border-white/30 rounded-2xl shadow-xl p-6 transition transform hover:scale-105 duration-300">
-      <h2 class="text-2xl font-bold mb-2">未来配饰</h2>
-      <p class="text-white/70 mb-4">智能与美学并存，开启科技风尚。</p>
-      <button class="px-4 py-2 bg-white text-pink-600 rounded-full font-semibold hover:bg-pink-100 transition">探索更多</button>
-    </div>
-
-    <!-- 卡片3 -->
-    <div class="backdrop-blur-lg bg-white/10 border border-white/30 rounded-2xl shadow-xl p-6 transition transform hover:scale-105 duration-300">
-      <h2 class="text-2xl font-bold mb-2">潮流灵感</h2>
-      <p class="text-white/70 mb-4">每日更新，捕捉最IN的穿搭灵感。</p>
-      <button class="px-4 py-2 bg-white text-red-600 rounded-full font-semibold hover:bg-red-100 transition">马上查看</button>
-    </div>
-
   </section>
+
+  <!-- ✨ 特色卡片区域 -->
+  <section id="features" class="py-20 px-6 max-w-7xl mx-auto">
+    <h3 class="text-4xl font-bold text-center mb-12">我们的特色</h3>
+    <div class="grid md:grid-cols-3 gap-10">
+      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:scale-105 transition">
+        <h4 class="text-2xl font-semibold mb-2">高级定制</h4>
+        <p class="text-white/70">融合个性与艺术的高端穿搭体验。</p>
+      </div>
+      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:scale-105 transition">
+        <h4 class="text-2xl font-semibold mb-2">未来设计</h4>
+        <p class="text-white/70">AI 与创意的完美结合，未来主义风格。</p>
+      </div>
+      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:scale-105 transition">
+        <h4 class="text-2xl font-semibold mb-2">限量发行</h4>
+        <p class="text-white/70">独家发布，限时限量，提升品牌价值。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🧠 关于我们 图文介绍 -->
+  <section id="about" class="py-20 bg-white/5 px-6">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <img src="https://source.unsplash.com/800x600/?designer,fashion" alt="品牌图片" class="rounded-2xl shadow-lg">
+      <div>
+        <h3 class="text-4xl font-bold mb-4">关于我们</h3>
+        <p class="text-white/80 text-lg leading-relaxed">我们是一家致力于打造原创设计与时尚理念结合的创意工作室。从高定服饰到潮流配件，我们始终走在潮流最前沿。每一件作品都代表着我们对美的极致追求。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 💬 客户评价 -->
+  <section id="reviews" class="py-20 px-6 max-w-7xl mx-auto">
+    <h3 class="text-4xl font-bold text-center mb-12">客户评价</h3>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
+        <p class="italic text-white/80 mb-4">“绝对是我穿过最有质感的衣服，设计非常出色！”</p>
+        <div class="text-sm font-semibold">—— 李女士</div>
+      </div>
+      <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
+        <p class="italic text-white/80 mb-4">“每次活动穿他们家的衣服都非常吸睛。”</p>
+        <div class="text-sm font-semibold">—— Kevin</div>
+      </div>
+      <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
+        <p class="italic text-white/80 mb-4">“设计和服务都很专业，非常推荐！”</p>
+        <div class="text-sm font-semibold">—— 陈先生</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📞 联系我们 + 页脚 -->
+  <footer id="contact" class="bg-white/10 backdrop-blur-md py-10 px-6 text-center text-white/90">
+    <h4 class="text-2xl font-bold mb-4">联系我们</h4>
+    <p class="mb-2">邮箱：contact@fashion.com</p>
+    <p class="mb-4">微信 / 微博 / Instagram：@fashion品牌</p>
+    <div class="mt-6 text-sm text-white/60">© 2025 时尚界 FASHION. 保留所有权利.</div>
+  </footer>
 
 </body>
 </html>
