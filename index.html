@@ -1,91 +1,104 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>时尚设计 | 华丽呈现</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浪漫宇宙 - 3D银河</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            height: 100vh;
+        }
+        #music-control {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-purple-700 via-pink-500 to-red-400 text-white font-sans">
+<body>
+    <div id="music-control">🔊 背景音乐：开启</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // 创建场景
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-  <!-- 🔝 顶部导航栏 -->
-  <header class="bg-white/10 backdrop-blur-md shadow-lg fixed w-full top-0 z-50">
-    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-      <h1 class="text-2xl font-extrabold text-white">时尚界</h1>
-      <nav class="space-x-6 hidden md:block">
-        <a href="#features" class="hover:underline">特色</a>
-        <a href="#about" class="hover:underline">关于</a>
-        <a href="#reviews" class="hover:underline">评价</a>
-        <a href="#contact" class="hover:underline">联系</a>
-      </nav>
-    </div>
-  </header>
+        // 创建星空背景
+        var starsGeometry = new THREE.SphereGeometry(500, 60, 60);
+        var starsMaterial = new THREE.MeshBasicMaterial({
+            color: 0xFFFFFF,
+            wireframe: true
+        });
+        var stars = new THREE.Mesh(starsGeometry, starsMaterial);
+        stars.position.set(0, 0, -500);
+        scene.add(stars);
 
-  <!-- 🎯 英雄大图区域 -->
-  <section class="h-screen flex items-center justify-center text-center px-6" style="background-image: url('https://source.unsplash.com/1600x900/?fashion'); background-size: cover; background-position: center;">
-    <div class="bg-black/50 p-10 rounded-xl backdrop-blur-md">
-      <h2 class="text-5xl md:text-6xl font-bold mb-4">引领时尚，定义未来</h2>
-      <p class="text-xl mb-6 text-white/80">高端设计 | 潮流灵感 | 个性定制</p>
-      <a href="#features" class="px-6 py-3 bg-white text-pink-600 font-bold rounded-full hover:bg-pink-100 transition">立即探索</a>
-    </div>
-  </section>
+        // 添加星星效果
+        function createStars() {
+            var starGeometry = new THREE.SphereGeometry(0.2, 6, 6);
+            var starMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+            var star = new THREE.Mesh(starGeometry, starMaterial);
+            star.position.set(
+                Math.random() * 1000 - 500,
+                Math.random() * 1000 - 500,
+                Math.random() * 1000 - 500
+            );
+            scene.add(star);
+        }
 
-  <!-- ✨ 特色卡片区域 -->
-  <section id="features" class="py-20 px-6 max-w-7xl mx-auto">
-    <h3 class="text-4xl font-bold text-center mb-12">我们的特色</h3>
-    <div class="grid md:grid-cols-3 gap-10">
-      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:scale-105 transition">
-        <h4 class="text-2xl font-semibold mb-2">高级定制</h4>
-        <p class="text-white/70">融合个性与艺术的高端穿搭体验。</p>
-      </div>
-      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:scale-105 transition">
-        <h4 class="text-2xl font-semibold mb-2">未来设计</h4>
-        <p class="text-white/70">AI 与创意的完美结合，未来主义风格。</p>
-      </div>
-      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:scale-105 transition">
-        <h4 class="text-2xl font-semibold mb-2">限量发行</h4>
-        <p class="text-white/70">独家发布，限时限量，提升品牌价值。</p>
-      </div>
-    </div>
-  </section>
+        for (let i = 0; i < 2000; i++) {
+            createStars();
+        }
 
-  <!-- 🧠 关于我们 图文介绍 -->
-  <section id="about" class="py-20 bg-white/5 px-6">
-    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-      <img src="https://source.unsplash.com/800x600/?designer,fashion" alt="品牌图片" class="rounded-2xl shadow-lg">
-      <div>
-        <h3 class="text-4xl font-bold mb-4">关于我们</h3>
-        <p class="text-white/80 text-lg leading-relaxed">我们是一家致力于打造原创设计与时尚理念结合的创意工作室。从高定服饰到潮流配件，我们始终走在潮流最前沿。每一件作品都代表着我们对美的极致追求。</p>
-      </div>
-    </div>
-  </section>
+        // 摄像机位置
+        camera.position.z = 1;
 
-  <!-- 💬 客户评价 -->
-  <section id="reviews" class="py-20 px-6 max-w-7xl mx-auto">
-    <h3 class="text-4xl font-bold text-center mb-12">客户评价</h3>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
-        <p class="italic text-white/80 mb-4">“绝对是我穿过最有质感的衣服，设计非常出色！”</p>
-        <div class="text-sm font-semibold">—— 李女士</div>
-      </div>
-      <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
-        <p class="italic text-white/80 mb-4">“每次活动穿他们家的衣服都非常吸睛。”</p>
-        <div class="text-sm font-semibold">—— Kevin</div>
-      </div>
-      <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
-        <p class="italic text-white/80 mb-4">“设计和服务都很专业，非常推荐！”</p>
-        <div class="text-sm font-semibold">—— 陈先生</div>
-      </div>
-    </div>
-  </section>
+        // 音乐控制
+        var musicControl = document.getElementById('music-control');
+        var audio = new Audio('https://www.bensound.com/bensound-music/bensound-creativecommons.mp3');
+        audio.loop = true;
+        var musicPlaying = true;
 
-  <!-- 📞 联系我们 + 页脚 -->
-  <footer id="contact" class="bg-white/10 backdrop-blur-md py-10 px-6 text-center text-white/90">
-    <h4 class="text-2xl font-bold mb-4">联系我们</h4>
-    <p class="mb-2">邮箱：contact@fashion.com</p>
-    <p class="mb-4">微信 / 微博 / Instagram：@fashion品牌</p>
-    <div class="mt-6 text-sm text-white/60">© 2025 时尚界 FASHION. 保留所有权利.</div>
-  </footer>
+        // 播放/暂停音乐
+        musicControl.addEventListener('click', () => {
+            if (musicPlaying) {
+                audio.pause();
+                musicControl.innerText = '🔇 背景音乐：关闭';
+            } else {
+                audio.play();
+                musicControl.innerText = '🔊 背景音乐：开启';
+            }
+            musicPlaying = !musicPlaying;
+        });
 
+        // 渲染动画
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 旋转星空
+            stars.rotation.x += 0.001;
+            stars.rotation.y += 0.001;
+
+            // 渲染场景
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 监听窗口变化
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
 </body>
 </html>
