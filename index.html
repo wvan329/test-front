@@ -1,184 +1,279 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>宇宙之舞</title>
     <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background: linear-gradient(45deg, #0b0c21, #1a1b4d, #2c1449);
-            overflow: hidden;
-            font-family: '华文行楷', cursive;
-        }
-
-        .galaxy {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            animation: galaxyRotate 240s linear infinite;
-        }
-
-        .star {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            box-shadow: 0 0 20px #fff;
-            animation: twinkle 2s infinite;
-        }
-
-        .solar-system {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .sun {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(#ffd700, #ff8c00);
-            border-radius: 50%;
-            box-shadow: 0 0 80px #ff8c00;
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        .planet {
-            position: absolute;
-            border-radius: 50%;
-            transform-style: preserve-3d;
-        }
-
-        .orbit {
-            position: absolute;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        @keyframes galaxyRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .poem {
+        * { margin: 0; padding: 0; }
+        canvas { display: block; }
+        #poem {
             position: fixed;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 24px;
-            text-shadow: 0 0 10px white;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.5em;
+            font-family: 'Microsoft YaHei', sans-serif;
             padding: 20px;
             max-width: 300px;
-            z-index: 1000;
+            text-shadow: 0 0 15px rgba(255, 182, 193, 0.7);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s;
         }
     </style>
 </head>
 <body>
-    <div class="galaxy" id="galaxy"></div>
-    <div class="solar-system">
-        <div class="sun"></div>
-    </div>
-    <div class="poem" style="top: 10%; left: 5%">亿万年的旋转<br>只为此刻与你相遇</div>
-    <div class="poem" style="bottom: 10%; right: 5%">星辰化作诗句<br>在永恒的黑暗中<br>写下光的轨迹</div>
-
+    <div id="poem"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script>
-        // 创建银河系星星
-        function createGalaxy() {
-            const galaxy = document.getElementById('galaxy');
-            for(let i = 0; i < 600; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                Object.assign(star.style, {
-                    left: Math.random() * 100 + '%',
-                    top: Math.random() * 100 + '%',
-                    width: Math.random() * 3 + 'px',
-                    height: Math.random() * 3 + 'px',
-                    animationDelay: Math.random() * 2 + 's'
-                });
-                galaxy.appendChild(star);
-            }
-        }
-
-        // 创建行星系统
-        const planets = [
-            { name: '水星', distance: 80, size: 8, color: '#A0522D', speed: 4.1 },
-            { name: '金星', distance: 120, size: 12, color: '#DEB887', speed: 3.2 },
-            { name: '地球', distance: 170, size: 14, color: '#4169E1', speed: 2.8 },
-            { name: '火星', distance: 220, size: 10, color: '#CD5C5C', speed: 2.4 },
-            { name: '木星', distance: 300, size: 24, color: '#DAA520', speed: 1.3 },
-            { name: '土星', distance: 380, size: 20, color: '#F4A460', speed: 0.9 },
-            { name: '天王星', distance: 440, size: 16, color: '#87CEEB', speed: 0.7 },
-            { name: '海王星', distance: 500, size: 15, color: '#4682B4', speed: 0.5 }
+        let scene, camera, renderer;
+        let stars, solarSystem;
+        const poems = [
+            "亿万星尘凝结成你的眼眸",
+            "光年之外的回响\n是宇宙的心跳",
+            "在时空的褶皱里\n藏着你我的永恒"
         ];
 
+        init();
+        animate();
+
+        function init() {
+            // 场景初始化
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 3000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // 银河系粒子场
+            createGalaxy(5000);
+            
+            // 星云背景
+            createNebula();
+
+            // 太阳系
+            createSolarSystem();
+
+            // 光源
+            createLights();
+
+            // 摄像机动画
+            camera.position.set(0, 400, 800);
+            new TWEEN.Tween(camera.position)
+                .to({ x: 0, y: 200, z: 1200 }, 20000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .repeat(Infinity)
+                .yoyo(true)
+                .start();
+
+            // 交互事件
+            initEvents();
+        }
+
+        function createGalaxy(count) {
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+
+            for (let i = 0; i < count; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() - 0.5) * 2);
+                const radius = Math.random() * 600 + 400;
+
+                positions.push(
+                    radius * Math.sin(phi) * Math.cos(theta),
+                    radius * Math.cos(phi),
+                    radius * Math.sin(phi) * Math.sin(theta)
+                );
+
+                colors.push(
+                    0.8 + Math.random() * 0.2,
+                    0.8 + Math.random() * 0.2,
+                    1.0,
+                    Math.random() * 0.5 + 0.5
+                );
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
+
+            const material = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                blending: THREE.AdditiveBlending
+            });
+
+            stars = new THREE.Points(geometry, material);
+            scene.add(stars);
+        }
+
+        function createNebula() {
+            const textureLoader = new THREE.TextureLoader();
+            const nebulaTexture = textureLoader.load('https://example.com/nebula.jpg'); // 替换为实际星云贴图
+            const nebulaGeometry = new THREE.SphereGeometry(2000, 32, 32);
+            const nebulaMaterial = new THREE.MeshBasicMaterial({
+                map: nebulaTexture,
+                transparent: true,
+                opacity: 0.3,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+            const nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
+            scene.add(nebula);
+        }
+
         function createSolarSystem() {
-            const system = document.querySelector('.solar-system');
-            planets.forEach(planet => {
-                const orbit = document.createElement('div');
-                orbit.className = 'orbit';
-                orbit.style.width = planet.distance * 2 + 'px';
-                orbit.style.height = planet.distance * 2 + 'px';
-                orbit.style.marginLeft = -planet.distance + 'px';
-                orbit.style.marginTop = -planet.distance + 'px';
+            solarSystem = new THREE.Group();
 
-                const planetDiv = document.createElement('div');
-                planetDiv.className = 'planet';
-                planetDiv.style.width = planet.size + 'px';
-                planetDiv.style.height = planet.size + 'px';
-                planetDiv.style.background = `radial-gradient(circle at 30% 30%, 
-                    ${planet.color}, ${darkenColor(planet.color)})`;
-                planetDiv.style.boxShadow = `0 0 20px ${lightenColor(planet.color)}`;
+            // 太阳（带光晕）
+            const sunGeometry = new THREE.SphereGeometry(30, 64, 64);
+            const sunMaterial = new THREE.MeshBasicMaterial({
+                color: 0xFFD700,
+                transparent: true,
+                blending: THREE.AdditiveBlending
+            });
+            const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+            
+            // 太阳光晕
+            const sunGlowGeometry = new THREE.SphereGeometry(50, 32, 32);
+            const sunGlowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xFF4500,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+            const sunGlow = new THREE.Mesh(sunGlowGeometry, sunGlowMaterial);
+            sun.add(sunGlow);
 
-                // 添加浪漫光晕
-                const glow = document.createElement('div');
-                glow.style.position = 'absolute';
-                glow.style.width = '100%';
-                glow.style.height = '100%';
-                glow.style.background = `radial-gradient(${lightenColor(planet.color)}, 
-                    transparent 70%)`;
-                glow.style.opacity = '0.3';
-                planetDiv.appendChild(glow);
+            solarSystem.add(sun);
 
-                orbit.appendChild(planetDiv);
-                system.appendChild(orbit);
+            // 行星生成
+            const planets = [
+                { size: 12, distance: 100, color: 0x8B4513, speed: 0.02 }, // 水星
+                { size: 16, distance: 150, color: 0xDEB887, speed: 0.015 }, // 金星
+                { size: 18, distance: 220, color: 0x4169E1, speed: 0.012 }, // 地球
+                { size: 14, distance: 280, color: 0xCD5C5C, speed: 0.01 }, // 火星
+                { size: 30, distance: 400, color: 0xDAA520, rings: true }, // 木星
+                { size: 28, distance: 480, color: 0xF4A460, rings: true }, // 土星
+                { size: 24, distance: 560, color: 0x87CEEB }, // 天王星
+                { size: 22, distance: 640, color: 0x4682B4 } // 海王星
+            ];
 
-                // 设置动画
-                planetDiv.style.animation = `
-                    orbit ${planet.speed * 10}s linear infinite,
-                    float ${Math.random()*3+2}s ease-in-out infinite alternate`;
+            planets.forEach((config, i) => {
+                const planet = createPlanet(config);
+                solarSystem.add(planet);
+            });
+
+            scene.add(solarSystem);
+        }
+
+        function createPlanet(config) {
+            const group = new THREE.Group();
+            
+            // 行星本体
+            const geometry = new THREE.SphereGeometry(config.size, 32, 32);
+            const material = new THREE.MeshPhongMaterial({
+                color: config.color,
+                specular: 0x555555,
+                shininess: 30
+            });
+            const planet = new THREE.Mesh(geometry, material);
+            
+            // 行星光环
+            if (config.rings) {
+                const ringGeometry = new THREE.RingGeometry(config.size*1.5, config.size*2, 64);
+                const ringMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xDEB887,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                ring.rotation.x = Math.PI / 2;
+                planet.add(ring);
+            }
+
+            // 轨道线
+            const orbitGeometry = new THREE.RingGeometry(config.distance, config.distance+1, 64);
+            const orbitMaterial = new THREE.LineBasicMaterial({
+                color: 0xFFFFFF,
+                transparent: true,
+                opacity: 0.1
+            });
+            const orbit = new THREE.Line(orbitGeometry, orbitMaterial);
+            orbit.rotation.x = Math.PI / 2;
+            group.add(orbit);
+
+            group.add(planet);
+            planet.position.x = config.distance;
+            return group;
+        }
+
+        function createLights() {
+            // 环境光
+            const ambientLight = new THREE.AmbientLight(0x444444);
+            scene.add(ambientLight);
+
+            // 太阳点光源
+            const sunLight = new THREE.PointLight(0xFFD700, 1.5, 1000);
+            sunLight.position.set(0, 0, 0);
+            scene.add(sunLight);
+        }
+
+        function initEvents() {
+            // 鼠标移动控制视角
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+            });
+
+            // 自动旋转
+            let autoRotate = true;
+            setInterval(() => {
+                if (autoRotate) {
+                    solarSystem.rotation.y += 0.001;
+                    stars.rotation.y += 0.0005;
+                }
+            }, 16);
+
+            // 点击暂停
+            document.addEventListener('click', () => {
+                autoRotate = !autoRotate;
+                showRandomPoem();
             });
         }
 
-        function darkenColor(hex) {
-            // 颜色处理函数...
+        function showRandomPoem() {
+            const poemElement = document.getElementById('poem');
+            poemElement.style.opacity = 1;
+            poemElement.innerHTML = poems[Math.floor(Math.random() * poems.length)];
+            
+            setTimeout(() => {
+                poemElement.style.opacity = 0;
+            }, 3000);
         }
 
-        function lightenColor(hex) {
-            // 颜色处理函数...
+        function animate() {
+            requestAnimationFrame(animate);
+            TWEEN.update();
+            
+            // 行星公转
+            solarSystem.children.forEach((group, i) => {
+                if (i > 0) { // 跳过太阳
+                    group.children[1].rotation.y += 0.02;
+                    group.rotation.y += 0.005 * (i+1);
+                }
+            });
+
+            // 动态星空
+            stars.rotation.y += 0.0001;
+            
+            renderer.render(scene, camera);
         }
 
-        // 初始化
-        createGalaxy();
-        createSolarSystem();
-
-        // 添加鼠标互动
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth - 0.5;
-            const y = e.clientY / window.innerHeight - 0.5;
-            document.body.style.transform = `
-                perspective(1000px)
-                rotateX(${y * 5}deg)
-                rotateY(${x * 5}deg)`;
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
