@@ -1,57 +1,44 @@
-<canvas id="canvas3d" width="600" height="400"></canvas>
-<script>
-const canvas = document.getElementById('canvas3d');
-const ctx = canvas.getContext('2d');
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>时尚华丽页面</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-600 via-pink-500 to-red-400 min-h-screen flex flex-col items-center justify-center text-white font-sans">
 
-// 立方体顶点（3D坐标）
-const vertices = [
-  [-100, -100, -100], [100, -100, -100], [100, 100, -100], [-100, 100, -100],
-  [-100, -100, 100], [100, -100, 100], [100, 100, 100], [-100, 100, 100]
-];
+  <!-- 标题 -->
+  <header class="text-center mb-12 px-4">
+    <h1 class="text-5xl font-extrabold drop-shadow-lg mb-4">欢迎来到时尚界</h1>
+    <p class="text-lg text-white/80 max-w-xl mx-auto">探索令人惊叹的设计、灵感与创意</p>
+  </header>
 
-// 连接顶点的边
-const edges = [
-  [0,1], [1,2], [2,3], [3,0], // 底面
-  [4,5], [5,6], [6,7], [7,4], // 顶面
-  [0,4], [1,5], [2,6], [3,7]  // 侧面
-];
+  <!-- 卡片容器 -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 max-w-6xl w-full">
+    
+    <!-- 卡片1 -->
+    <div class="backdrop-blur-lg bg-white/10 border border-white/30 rounded-2xl shadow-xl p-6 transition transform hover:scale-105 duration-300">
+      <h2 class="text-2xl font-bold mb-2">高级时装</h2>
+      <p class="text-white/70 mb-4">融合经典与前卫，定义你的个性。</p>
+      <button class="px-4 py-2 bg-white text-purple-600 rounded-full font-semibold hover:bg-purple-100 transition">了解更多</button>
+    </div>
 
-function project3DTo2D(x, y, z) {
-  // 简单透视投影（焦距 500）
-  const focalLength = 500;
-  const scale = focalLength / (focalLength + z);
-  return [x * scale + canvas.width/2, y * scale + canvas.height/2];
-}
+    <!-- 卡片2 -->
+    <div class="backdrop-blur-lg bg-white/10 border border-white/30 rounded-2xl shadow-xl p-6 transition transform hover:scale-105 duration-300">
+      <h2 class="text-2xl font-bold mb-2">未来配饰</h2>
+      <p class="text-white/70 mb-4">智能与美学并存，开启科技风尚。</p>
+      <button class="px-4 py-2 bg-white text-pink-600 rounded-full font-semibold hover:bg-pink-100 transition">探索更多</button>
+    </div>
 
-function drawCube() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // 旋转立方体（动态效果）
-  const angle = Date.now() / 1000;
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
+    <!-- 卡片3 -->
+    <div class="backdrop-blur-lg bg-white/10 border border-white/30 rounded-2xl shadow-xl p-6 transition transform hover:scale-105 duration-300">
+      <h2 class="text-2xl font-bold mb-2">潮流灵感</h2>
+      <p class="text-white/70 mb-4">每日更新，捕捉最IN的穿搭灵感。</p>
+      <button class="px-4 py-2 bg-white text-red-600 rounded-full font-semibold hover:bg-red-100 transition">马上查看</button>
+    </div>
 
-  const rotated = vertices.map(v => {
-    // 绕Y轴旋转
-    const x = v[0] * cos - v[2] * sin;
-    const z = v[0] * sin + v[2] * cos;
-    return [x, v[1], z];
-  });
+  </section>
 
-  // 绘制边
-  ctx.strokeStyle = 'gold';
-  ctx.lineWidth = 2;
-  edges.forEach(edge => {
-    const [i1, i2] = edge;
-    const [x1, y1] = project3DTo2D(...rotated[i1]);
-    const [x2, y2] = project3DTo2D(...rotated[i2]);
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-  });
-
-  requestAnimationFrame(drawCube);
-}
-drawCube();
-</script>
+</body>
+</html>
